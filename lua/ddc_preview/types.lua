@@ -1,0 +1,14 @@
+---:h complete-items
+---@class dp.completeItem
+---@field word string
+---@field abbr? string
+---@field menu? string
+---@field info? string
+---@field kind? string
+---@field icase? number
+---@field equal? number
+---@field dup? number
+---@field empty? number
+---@field user_data? unknown
+
+---@alias dp.lsp.MarkedString string | { language: string, value: string }
