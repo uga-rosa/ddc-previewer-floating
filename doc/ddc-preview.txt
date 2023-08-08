@@ -1,0 +1,89 @@
+*ddc_preview.txt*			A previewer for ddc.vim in Neovim.
+
+Author:  uga-rosa <uga6603@gmail.com>
+License: MIT License
+
+==============================================================================
+CONTENTS				*ddc_preview-contents*
+
+Introduction				|ddc_preview-introduction|
+Commands				|ddc_preview-commands|
+Functions				|ddc_preview-functions|
+Options					|ddc_preview-options|
+
+==============================================================================
+INTRODUCTION				*ddc_preview-introduction*
+
+A previewer for ddc.vim in Neovim.
+https://github.com/Shougo/ddc.vim
+
+Supported sources are:
+	https://github.com/Shougo/ddc-source-nvim-lsp
+	https://github.com/uga-rosa/ddc-source-vsnip
+	https://github.com/uga-rosa/ddc-source-nvim-lua
+
+
+==============================================================================
+FUNCTIONS				*ddc_preview-functions*
+
+>
+	local ddc_preview = require("ddc_preview")
+<
+
+					*ddc_preview-function-enable()*
+ddc_preview.enable()
+	Enables preview.
+
+					*ddc_preview-function-disable()*
+ddc_preview.disable()
+	Disables preview.
+
+					*ddc_preview-function-setup()*
+ddc_preview.setup({opts})
+	Sets options. See |ddc_preview-options|.
+>
+	ddc_preview.setup({
+	  ui = "pum",
+	  max_width = 78,
+	  ...
+	})
+<
+
+==============================================================================
+OPTIONS					*ddc_preview-options*
+
+						*ddc_preview-option-ui*
+ui	(string)
+	Same as |ddc-option-ui|.
+	Supported UIs are "pum" and "native".
+
+	Default: "pum"
+
+					*ddc_preview-option-max_height*
+max_height	(number)
+	Max height of the preview.
+
+	Default: 30
+
+					*ddc_preview-option-max_width*
+max_width	(number)
+	Max width of the preview.
+
+	Default: 80
+
+					*ddc_preview-option-window_options*
+window_options		(table)
+	The window options to be set for the preview window.
+
+	Default:
+	{
+		"wrap":  v:false,
+		"number": v:false,
+		"signcolumn": "no",
+		"foldenable": v:false,
+		"foldcolumn": v:false,
+	}
+
+
+==============================================================================
+vim:tw=78:ts=8:noet:ft=help:norl:
