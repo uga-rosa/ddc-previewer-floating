@@ -7,7 +7,6 @@ License: MIT License
 CONTENTS				*ddc_preview-contents*
 
 Introduction				|ddc_preview-introduction|
-Commands				|ddc_preview-commands|
 Functions				|ddc_preview-functions|
 Options					|ddc_preview-options|
 
