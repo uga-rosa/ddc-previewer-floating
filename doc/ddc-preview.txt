@@ -81,7 +81,7 @@ window_options		(table)
 		"number": v:false,
 		"signcolumn": "no",
 		"foldenable": v:false,
-		"foldcolumn": v:false,
+		"foldcolumn": "0",
 	}
 
 
