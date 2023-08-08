@@ -133,6 +133,10 @@ function View:_open(item)
       end
     end)
   elseif not utils.empty(item.info, "string") then
+    -- item-attribute-info
+    local lines = vim.split(item.info, "\n")
+    vim.api.nvim_buf_set_lines(self.bufnr, 0, -1, true, lines)
+    self:_win_open(#lines, utils.max(lines, vim.api.nvim_strwidth))
   end
 end
 
