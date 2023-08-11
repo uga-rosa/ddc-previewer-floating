@@ -11,4 +11,27 @@
 ---@field empty? number
 ---@field user_data? unknown
 
----@alias dp.lsp.MarkedString string | { language: string, value: string }
+---@class PreviewContext
+---@field row? number
+---@field col? number
+---@field height? number
+---@field width? number
+---@field isFloating? boolean
+---@field split? "horizontal" | "vertical" | "no"
+
+---@class EmptyPreviewer
+---@field kind "empty"
+
+---@class CommandPreviewer
+---@field kind "command"
+---@field command string
+
+---@class MarkdownPreviewer
+---@field kind "markdown"
+---@field contents string[]
+
+---@class TextPreviewer
+---@field kind "text"
+---@field contents string[]
+
+---@alias Previewer EmptyPreviewer | CommandPreviewer | MarkdownPreviewer | TextPreviewer

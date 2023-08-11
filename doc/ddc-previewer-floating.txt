@@ -17,12 +17,8 @@ INTRODUCTION				*ddc_previewer_floating-introduction*
 A previewer for ddc.vim in Neovim.
 https://github.com/Shougo/ddc.vim
 
-Supported sources are:
-	https://github.com/Shougo/ddc-source-nvim-lsp
-	https://github.com/uga-rosa/ddc-source-vsnip
-	https://github.com/uga-rosa/ddc-source-nvim-lua
-
-or items which have |ddc-item-attribute-info|.
+Supported sources are those that have |ddc-source-attribute-getPreviewer|
+or those that return items having |ddc-item-attribute-info|.
 
 
 ==============================================================================

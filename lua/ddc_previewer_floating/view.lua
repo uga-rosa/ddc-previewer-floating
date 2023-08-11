@@ -43,18 +43,16 @@ function View:close()
   self.winid = nil
 end
 
----@param height number
----@param width number
-function View:_win_open(height, width)
-  local pum_pos = pum.get_pos()
-  local row = pum_pos.row
-  local col = pum_pos.col + pum_pos.width + pum_pos.scrollbar
+---@param context PreviewContext
+function View:_win_open(context)
+  local max_width = config.get("max_width")
+  local max_height = config.get("max_height")
   self.winid = vim.api.nvim_open_win(self.bufnr, false, {
     relative = "editor",
-    row = row,
-    col = col,
-    height = math.min(height, vim.opt.lines:get() - row, config.get("max_height")),
-    width = math.min(width, vim.opt.columns:get() - col, config.get("max_width")),
+    row = context.row,
+    col = context.col,
+    height = math.min(context.height, vim.opt.lines:get() - context.row, max_height),
+    width = math.min(context.width, vim.opt.columns:get() - context.col, max_width),
     border = "single",
     zindex = 10000,
   })
@@ -63,95 +61,69 @@ function View:_win_open(height, width)
   end
 end
 
----@param input dp.lsp.MarkedString | dp.lsp.MarkedString[] | ddc.lsp.MarkupContent
----@param contents? string[]
----@return string[] contents
-local function converter(input, contents)
-  return vim.lsp.util.convert_input_to_markdown_lines(input, contents)
-end
-
 ---@param item dp.completeItem
 function View:_open(item)
-  if utils.get_rec(item, "user_data", "vsnip", "snippet") then
-    -- source-vsnip
-    local documents = converter({
-      language = vim.bo.filetype,
-      value = vim.fn["vsnip#to_string"](item.user_data.vsnip.snippet),
-    })
-    self:_post_markdown(documents)
-  elseif utils.get_rec(item, "user_data", "lspitem") then
-    -- source-nvim-lsp
-    ---@type ddc.lsp.CompletionItem
-    local lspItem = vim.json.decode(item.user_data.lspitem)
-    local unresolvedItem = lspItem
-    if lspItem.documentation == nil then
-      local clientId = item.user_data.clientId
-      lspItem = require("ddc_nvim_lsp.internal").resolve(clientId, lspItem) or lspItem
-    end
-    ---@type string[]
-    local documents = {}
+  local pum_pos = pum.get_pos()
+  local row = pum_pos.row
+  local col = pum_pos.col + pum_pos.width + pum_pos.scrollbar
+  local max_width = config.get("max_width")
+  local max_height = config.get("max_height")
+  ---@type PreviewContext
+  local context = {
+    row = row,
+    col = col,
+    width = max_width,
+    height = max_height,
+    isFloating = true,
+  }
+  ---@type Previewer
+  local previewer = vim.fn["ddc#get_previewer"](item, context)
 
-    -- detail
-    if not utils.empty(lspItem.detail) then
-      documents = converter({
-        language = vim.bo.filetype,
-        value = lspItem.detail,
-      }, documents)
-    end
-
-    -- import from (tsc)
-    local source = utils.get_rec(unresolvedItem, "data", "tsc", "source")
-    if type(source) == "string" then
-      if #documents > 0 then
-        documents = converter("---", documents)
-      end
-      documents = converter(("import from `%s`"):format(source), documents)
-    end
-
-    -- documentation
-    if not utils.empty(lspItem.documentation) then
-      if #documents > 0 then
-        documents = converter("---", documents)
-      end
-      documents = converter(lspItem.documentation, documents)
-    end
-
-    self:_post_markdown(documents)
-  elseif utils.get_rec(item, "user_data", "help_tag") then
-    -- source-nvim-lua
-    local help_tag = item.user_data.help_tag
-    if utils.empty(help_tag, "string") then
+  if previewer.kind == "markdown" then
+    local contents = previewer.contents
+    if #contents == 0 then
       return
     end
-
-    self:_win_open(config.get("max_height"), math.min(78, config.get("max_width")))
+    vim.api.nvim_buf_set_lines(self.bufnr, 0, -1, true, contents)
+    vim.lsp.util.stylize_markdown(self.bufnr, contents, {
+      max_height = max_height,
+      max_width = max_width,
+    })
+    local lines = vim.api.nvim_buf_get_lines(self.bufnr, 0, -1, true) --[[@as string[] ]]
+    context.height = #lines
+    context.width = utils.max(lines, vim.api.nvim_strwidth)
+    self:_win_open(context)
+  elseif previewer.kind == "command" then
+    local command = previewer.command
+    self:_win_open(context)
     vim.api.nvim_set_option_value("buftype", "help", { buf = self.bufnr })
     vim.api.nvim_win_call(self.winid, function()
-      local ok = pcall(vim.cmd.help, help_tag)
+      local ok = pcall(function()
+        vim.cmd(command)
+      end)
       if not ok then
         self:close()
       end
     end)
-  elseif not utils.empty(item.info, "string") then
+  elseif previewer.kind == "text" then
+    local contents = previewer.contents
+    if #contents == 0 then
+      return
+    end
+    vim.api.nvim_buf_set_lines(self.bufnr, 0, -1, true, contents)
+    context.height = #contents
+    context.width = utils.max(contents, vim.api.nvim_strwidth)
+    self:_win_open(context)
+  elseif previewer.kind == "empty" then
+    return
+  elseif type(item.info) == "string" and item.info ~= "" then
     -- item-attribute-info
     local lines = vim.split(item.info, "\n")
     vim.api.nvim_buf_set_lines(self.bufnr, 0, -1, true, lines)
-    self:_win_open(#lines, utils.max(lines, vim.api.nvim_strwidth))
+    context.height = #lines
+    context.width = utils.max(lines, vim.api.nvim_strwidth)
+    self:_win_open(context)
   end
-end
-
----@param documents string[]
-function View:_post_markdown(documents)
-  if #documents == 0 then
-    return
-  end
-  vim.api.nvim_buf_set_lines(self.bufnr, 0, -1, true, documents)
-  vim.lsp.util.stylize_markdown(self.bufnr, documents, {
-    max_height = config.get("max_height"),
-    max_width = config.get("max_width"),
-  })
-  local lines = vim.api.nvim_buf_get_lines(self.bufnr, 0, -1, true) --[[@as string[] ]]
-  self:_win_open(#lines, utils.max(lines, vim.api.nvim_strwidth))
 end
 
 return View

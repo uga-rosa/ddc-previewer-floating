@@ -1,23 +1,5 @@
 local M = {}
 
----@param expr string|nil|ddc.lsp.MarkupContent
----@param t? string
----@return boolean
-function M.empty(expr, t)
-  local expr_t = type(expr)
-  if t and expr_t ~= t then
-    return true
-  end
-  if expr_t == "nil" then
-    return true
-  elseif expr_t == "string" then
-    return expr == ""
-  elseif expr_t == "table" then
-    return expr.value == nil or expr.value == ""
-  end
-  return false
-end
-
 ---@generic T
 ---@param list T[]
 ---@param cb fun(x: T): number
@@ -32,22 +14,6 @@ function M.max(list, cb)
     end
   end
   return max_value
-end
-
----@param top table
----@param ... string
----@return unknown | nil
-function M.get_rec(top, ...)
-  local v = top
-  local keys = { ... }
-  for _, key in ipairs(keys) do
-    if type(v) == "table" and v[key] ~= nil then
-      v = v[key]
-    else
-      return
-    end
-  end
-  return v
 end
 
 local timer = {}
