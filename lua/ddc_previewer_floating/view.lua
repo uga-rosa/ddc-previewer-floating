@@ -1,6 +1,6 @@
-local config = require("ddc_preview.config")
-local pum = require("ddc_preview.pum")
-local utils = require("ddc_preview.utils")
+local config = require("ddc_previewer_floating.config")
+local pum = require("ddc_previewer_floating.pum")
+local utils = require("ddc_previewer_floating.utils")
 
 ---@class View
 ---@field bufnr number

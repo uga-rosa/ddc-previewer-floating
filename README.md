@@ -1,4 +1,4 @@
-# ddc-preview.nvim
+# ddc-previewer-floating
 
 A previewer for ddc.vim in Neovim.
 

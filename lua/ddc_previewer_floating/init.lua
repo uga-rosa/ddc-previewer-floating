@@ -1,6 +1,7 @@
-local View = require("ddc_preview.view")
-local pum = require("ddc_preview.pum")
-local utils = require("ddc_preview.utils")
+local View = require("ddc_previewer_floating.view")
+local pum = require("ddc_previewer_floating.pum")
+local utils = require("ddc_previewer_floating.utils")
+local config = require("ddc_previewer_floating.config")
 
 local M = {}
 
@@ -47,6 +48,6 @@ function M.disable()
   vim.api.nvim_del_augroup_by_name(GROUP_NAME)
 end
 
-M.setup = require("ddc_preview.config").setup
+M.setup = config.setup
 
 return M

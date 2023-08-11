@@ -1,4 +1,4 @@
-local config = require("ddc_preview.config")
+local config = require("ddc_previewer_floating.config")
 
 local M = {}
 
