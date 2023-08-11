@@ -1,18 +1,18 @@
-*ddc_preview.txt*			A previewer for ddc.vim in Neovim.
+*ddc_previewer_floating.txt*		A previewer for ddc.vim in Neovim.
 
 Author:  uga-rosa <uga6603@gmail.com>
 License: MIT License
 
 ==============================================================================
-CONTENTS				*ddc_preview-contents*
+CONTENTS				*ddc_previewer_floating-contents*
 
-Introduction				|ddc_preview-introduction|
-Functions				|ddc_preview-functions|
-Options					|ddc_preview-options|
+Introduction				|ddc_previewer_floating-introduction|
+Functions				|ddc_previewer_floating-functions|
+Options					|ddc_previewer_floating-options|
 
 
 ==============================================================================
-INTRODUCTION				*ddc_preview-introduction*
+INTRODUCTION				*ddc_previewer_floating-introduction*
 
 A previewer for ddc.vim in Neovim.
 https://github.com/Shougo/ddc.vim
@@ -26,23 +26,23 @@ or items which have |ddc-item-attribute-info|.
 
 
 ==============================================================================
-FUNCTIONS				*ddc_preview-functions*
+FUNCTIONS				*ddc_previewer_floating-functions*
 >
-	local ddc_preview = require("ddc_preview")
+	local ddc_previewer_floating = require("ddc_previewer_floating")
 <
-					*ddc_preview-function-enable()*
-ddc_preview.enable()
+				*ddc_previewer_floating-function-enable()*
+ddc_previewer_floating.enable()
 	Enables preview.
 
-					*ddc_preview-function-disable()*
-ddc_preview.disable()
+				*ddc_previewer_floating-function-disable()*
+ddc_previewer_floating.disable()
 	Disables preview.
 
-					*ddc_preview-function-setup()*
-ddc_preview.setup({opts})
-	Sets options. See |ddc_preview-options|.
+				*ddc_previewer_floating-function-setup()*
+ddc_previewer_floating.setup({opts})
+	Sets options. See |ddc_previewer_floating-options|.
 >
-	ddc_preview.setup({
+	ddc_previewer_floating.setup({
 	  ui = "pum",
 	  max_width = 78,
 	  ...
@@ -50,28 +50,28 @@ ddc_preview.setup({opts})
 <
 
 ==============================================================================
-OPTIONS					*ddc_preview-options*
+OPTIONS					*ddc_previewer_floating-options*
 
-						*ddc_preview-option-ui*
+					*ddc_previewer_floating-option-ui*
 ui	(string)
 	Same as |ddc-option-ui|.
 	Supported UIs are "pum" and "native".
 
 	Default: "pum"
 
-					*ddc_preview-option-max_height*
+				*ddc_previewer_floating-option-max_height*
 max_height	(number)
 	Max height of the preview.
 
 	Default: 30
 
-					*ddc_preview-option-max_width*
+				*ddc_previewer_floating-option-max_width*
 max_width	(number)
 	Max width of the preview.
 
 	Default: 80
 
-					*ddc_preview-option-window_options*
+				*ddc_previewer_floating-option-window_options*
 window_options		(table)
 	The window options to be set for the preview window.
 
