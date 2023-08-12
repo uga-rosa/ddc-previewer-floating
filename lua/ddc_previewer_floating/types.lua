@@ -22,6 +22,10 @@
 ---@class EmptyPreviewer
 ---@field kind "empty"
 
+---@class HelpPreviewer
+---@field kind "help"
+---@field tag string
+
 ---@class CommandPreviewer
 ---@field kind "command"
 ---@field command string
@@ -34,4 +38,4 @@
 ---@field kind "text"
 ---@field contents string[]
 
----@alias Previewer EmptyPreviewer | CommandPreviewer | MarkdownPreviewer | TextPreviewer
+---@alias Previewer EmptyPreviewer | HelpPreviewer | CommandPreviewer | MarkdownPreviewer | TextPreviewer

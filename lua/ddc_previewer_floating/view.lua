@@ -78,25 +78,35 @@ function View:_open(item)
   }
   ---@type Previewer
   local previewer = vim.fn["ddc#get_previewer"](item, context)
+  if previewer.kind == "empty" and type(item.info) == "string" and item.info ~= "" then
+    local info = item.info:gsub("\r\n?", "\n")
+    previewer = { kind = "text", contents = vim.split(info, "\n") }
+  end
 
-  if previewer.kind == "markdown" then
+  if previewer.kind == "empty" then
+    return
+  elseif previewer.contents then
+    -- text or markdown
     local contents = previewer.contents
     if #contents == 0 then
       return
     end
     vim.api.nvim_buf_set_lines(self.bufnr, 0, -1, true, contents)
-    vim.lsp.util.stylize_markdown(self.bufnr, contents, {
-      max_height = max_height,
-      max_width = max_width,
-    })
-    local lines = vim.api.nvim_buf_get_lines(self.bufnr, 0, -1, true) --[[@as string[] ]]
-    context.height = #lines
-    context.width = utils.max(lines, vim.api.nvim_strwidth)
+    if previewer.kind == "markdown" then
+      vim.lsp.util.stylize_markdown(self.bufnr, contents, {
+        max_height = max_height,
+        max_width = max_width,
+      })
+      contents = vim.api.nvim_buf_get_lines(self.bufnr, 0, -1, true) --[[@as string[] ]]
+    end
+    context.height = #contents
+    context.width = utils.max(contents, vim.api.nvim_strwidth)
     self:_win_open(context)
-  elseif previewer.kind == "command" then
-    local command = previewer.command
+  else
+    -- help or command
+    local command = previewer.kind == "help" and "setlocal buftype=help | help " .. previewer.tag
+      or previewer.command
     self:_win_open(context)
-    vim.api.nvim_set_option_value("buftype", "help", { buf = self.bufnr })
     vim.api.nvim_win_call(self.winid, function()
       local ok = pcall(function()
         vim.cmd(command)
@@ -105,24 +115,6 @@ function View:_open(item)
         self:close()
       end
     end)
-  elseif previewer.kind == "text" then
-    local contents = previewer.contents
-    if #contents == 0 then
-      return
-    end
-    vim.api.nvim_buf_set_lines(self.bufnr, 0, -1, true, contents)
-    context.height = #contents
-    context.width = utils.max(contents, vim.api.nvim_strwidth)
-    self:_win_open(context)
-  elseif previewer.kind == "empty" then
-    return
-  elseif type(item.info) == "string" and item.info ~= "" then
-    -- item-attribute-info
-    local lines = vim.split(item.info, "\n")
-    vim.api.nvim_buf_set_lines(self.bufnr, 0, -1, true, lines)
-    context.height = #lines
-    context.width = utils.max(lines, vim.api.nvim_strwidth)
-    self:_win_open(context)
   end
 end
 
