@@ -51,8 +51,8 @@ function View:_win_open(context)
     relative = "editor",
     row = context.row,
     col = context.col,
-    height = math.min(context.height, vim.opt.lines:get() - context.row, max_height),
-    width = math.min(context.width, vim.opt.columns:get() - context.col, max_width),
+    height = math.min(context.height, max_height),
+    width = math.min(context.width, max_width),
     border = "single",
     zindex = 10000,
   })
