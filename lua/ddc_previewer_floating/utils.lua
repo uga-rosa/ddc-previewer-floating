@@ -43,4 +43,10 @@ function M.debounse(name, fn, time)
   )
 end
 
+---@param x any
+---@return boolean
+function M.is_truthy(x)
+  return 0 == vim.fn.empty(x)
+end
+
 return M
