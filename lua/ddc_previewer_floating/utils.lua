@@ -46,7 +46,7 @@ end
 ---@param x any
 ---@return boolean
 function M.is_truthy(x)
-  return 0 == vim.fn.empty(x)
+  return vim.fn.empty(x) == 0
 end
 
 return M
