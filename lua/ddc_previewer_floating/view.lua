@@ -65,7 +65,10 @@ end
 function View:_open(item)
   local pum_pos = pum.get_pos()
   local row = pum_pos.row
-  local col = pum_pos.col + pum_pos.width + pum_pos.scrollbar
+  local col = pum_pos.col + pum_pos.width
+  if utils.is_truthy(pum_pos.scrollbar) then
+    col = col + 1
+  end
   local max_width = config.get("max_width")
   local max_height = config.get("max_height")
   ---@type PreviewContext
