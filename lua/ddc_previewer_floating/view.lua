@@ -53,8 +53,8 @@ function View:_win_open(context)
     col = context.col,
     height = math.min(context.height, max_height),
     width = math.min(context.width, max_width),
-    border = "single",
-    zindex = 10000,
+    border = config.get("border"),
+    zindex = config.get("zindex"),
   })
   for key, value in pairs(config.get("window_options")) do
     vim.api.nvim_set_option_value(key, value, { win = self.winid })

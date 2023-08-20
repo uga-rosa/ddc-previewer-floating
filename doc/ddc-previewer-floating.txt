@@ -67,6 +67,18 @@ max_width	(number)
 
 	Default: 80
 
+					*ddc_previewer_floating-option-border*
+border		(string | string[])
+	Style of window border. See |nvim_open_win()| for details.
+
+	Default: "single"
+
+					*ddc_previewer_floating-option-zindex*
+zindex		(number)
+	Stacking order. See |nvim_open_win()| for details.
+
+	Default: 10000
+
 				*ddc_previewer_floating-option-window_options*
 window_options		(table)
 	The window options to be set for the preview window.
