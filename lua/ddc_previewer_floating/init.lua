@@ -15,9 +15,14 @@ function M.enable()
     end, 100)
   end
   local function close()
-    vim.schedule(function()
+    if vim.api.nvim_get_mode().mode == "i" then
+      -- textlock
+      vim.schedule(function()
+        view:close()
+      end)
+    else
       view:close()
-    end)
+    end
   end
 
   local group = vim.api.nvim_create_augroup(GROUP_NAME, {})
