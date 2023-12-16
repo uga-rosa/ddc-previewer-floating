@@ -21,6 +21,10 @@ function View:_buf_reset()
   self.bufnr = vim.api.nvim_create_buf(false, true)
 end
 
+function View:is_open()
+  return self.winid and vim.api.nvim_win_is_valid(self.winid)
+end
+
 function View:open()
   self:close()
   if not pum.visible() then
@@ -37,7 +41,7 @@ function View:open()
 end
 
 function View:close()
-  if self.winid and vim.api.nvim_win_is_valid(self.winid) then
+  if self:is_open() then
     vim.api.nvim_win_close(self.winid, true)
   end
   self.winid = nil
